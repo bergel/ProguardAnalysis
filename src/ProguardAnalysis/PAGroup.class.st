@@ -3,3 +3,8 @@ Class {
 	#superclass : #PAEntity,
 	#category : #ProguardAnalysis
 }
+
+{ #category : #testing }
+PAGroup >> isGroup [
+	^ true
+]

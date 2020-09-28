@@ -34,10 +34,18 @@ PAModelTest >> testEmpty [
 
 { #category : #tests }
 PAModelTest >> testSmallDataSet [
+	| g |
 	m importFromString: self smallDataSet.
 	self assert: m numberOfRules equals: 8.
 	self assert: m options size equals: 0.
 
 	m build.
 	self assert: m options size equals: 6.	
+	self assert: m groups size equals: 4.
+	
+	g := m groups second.
+	self assert: g name equals: 'preverification'.
+	self assert: g options first name equals: 'dontpreverify'.
+	 
+
 ]
