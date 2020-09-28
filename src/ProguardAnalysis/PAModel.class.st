@@ -52,11 +52,22 @@ PAModel >> groups [
 	^ groups
 ]
 
+{ #category : #visualization }
+PAModel >> gtInspectorViewIn: composite [
+	<gtInspectorPresentationOrder: -10>
+	composite roassal3
+		title: 'Simple App';
+		initializeCanvas: [ 
+			self visualizeSimpleApp ]
+]
+
 { #category : #public }
 PAModel >> importFilename: filename [
-	| fr |
+	| fr rs |
 	fr := filename asFileReference.
-	self importFromString: fr contents
+	rs := fr readStream.
+	 
+	self importFromString: rs contents
 ]
 
 { #category : #public }
@@ -101,4 +112,32 @@ PAModel >> paths [
 { #category : #initialization }
 PAModel >> rules [
 	^ rules
+]
+
+{ #category : #visualization }
+PAModel >> visualizeSimple [
+
+	| m |
+	m := RSMondrian new.
+	m nodes: self apps forEach: [ :a | 
+		m shape box
+			color: Color blue;
+			size: 5.
+		m nodes: a options asSet ].
+	m build.
+	^ m canvas
+]
+
+{ #category : #visualization }
+PAModel >> visualizeSimpleApp [
+
+	| m |
+	m := RSMondrian new.
+	m nodes: self apps forEach: [ :a | 
+		m shape box
+			color: Color blue;
+			size: 5.
+		m nodes: a options asSet ].
+	m build.
+	^ m canvas
 ]
