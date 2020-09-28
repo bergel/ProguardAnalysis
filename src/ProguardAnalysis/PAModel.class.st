@@ -53,6 +53,15 @@ PAModel >> groups [
 ]
 
 { #category : #visualization }
+PAModel >> gtInspectorOptionsIn: composite [
+	<gtInspectorPresentationOrder: -10>
+	composite roassal3
+		title: 'Option Cooccurence/App';
+		initializeCanvas: [ 
+			self visualizeOptionCooccurenceApp ]
+]
+
+{ #category : #visualization }
 PAModel >> gtInspectorViewIn: composite [
 	<gtInspectorPresentationOrder: -10>
 	composite roassal3
@@ -112,6 +121,19 @@ PAModel >> paths [
 { #category : #initialization }
 PAModel >> rules [
 	^ rules
+]
+
+{ #category : #visualization }
+PAModel >> visualizeOptionCooccurenceApp [
+
+	| m |
+	m := RSMondrian new.
+	m nodes: self options.
+	m line connectToAll: [ :o | 
+		o coOptionsFromAppWithOccurencesHigherThan: 800 ].
+	m layout force.
+	m build.
+	^ m canvas
 ]
 
 { #category : #visualization }

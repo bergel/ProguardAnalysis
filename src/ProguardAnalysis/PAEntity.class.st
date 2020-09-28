@@ -19,6 +19,23 @@ PAEntity >> apps [
 ]
 
 { #category : #'as yet unclassified' }
+PAEntity >> coOptionsFromApp [
+	^ (self apps flatCollect: #options) copyWithoutDuplicates
+]
+
+{ #category : #'as yet unclassified' }
+PAEntity >> coOptionsFromAppWithOccurences [
+	| r |
+	r := (self apps flatCollect: #options) groupedBy: #yourself.
+	^ r associations collect: [ :as | as key -> as value size ]
+]
+
+{ #category : #'as yet unclassified' }
+PAEntity >> coOptionsFromAppWithOccurencesHigherThan: threshold [
+	^ (self coOptionsFromAppWithOccurences select: [ :as | as value >= threshold ]) collect: #key
+]
+
+{ #category : #'as yet unclassified' }
 PAEntity >> groups [
 	^ entities select: #isGroup
 ]
