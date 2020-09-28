@@ -36,4 +36,8 @@ PAModelTest >> testEmpty [
 PAModelTest >> testSmallDataSet [
 	m importFromString: self smallDataSet.
 	self assert: m numberOfRules equals: 8.
+	self assert: m options size equals: 0.
+
+	m build.
+	self assert: m options size equals: 6.	
 ]

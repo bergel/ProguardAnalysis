@@ -21,12 +21,30 @@ PAModel >> apps [
 	^ apps
 ]
 
-{ #category : #building }
+{ #category : #'private - building' }
 PAModel >> build [
-	apps := (rules collect: #app) copyWithoutDuplicates collect: [ :a | PAApp new name: a ].
-	groups := (rules collect: #group) copyWithoutDuplicates collect: [ :a | PAGroup new name: a ].
-	paths := (rules collect: #path) copyWithoutDuplicates collect: [ :a | PAPath new name: a ].
-	options := (rules collect: #option) copyWithoutDuplicates collect: [ :a | PAOption new name: a ].
+	| a p g o |
+	apps := (rules collect: #app) copyWithoutDuplicates collect: [ :aa | PAApp new name: aa ].
+	groups := (rules collect: #group) copyWithoutDuplicates collect: [ :aa | PAGroup new name: aa ].
+	paths := (rules collect: #path) copyWithoutDuplicates collect: [ :aa | PAPath new name: aa ].
+	options := (rules collect: #option) copyWithoutDuplicates collect: [ :aa | PAOption new name: aa ].
+	
+	rules do: [ :r |
+		a := self entityIn: apps  named: r app.
+		p := self entityIn: paths  named: r path.
+		g := self entityIn: groups  named: r group.
+		o := self entityIn: options  named: r option.
+		
+		a addOutgoingAll: { p . g . o }.
+		p addOutgoingAll: { a . g . o }.
+		g addOutgoingAll: { p . a . o }.
+		o addOutgoingAll: { p . g . a }.
+	]
+]
+
+{ #category : #'private - building' }
+PAModel >> entityIn: coll named: aName [
+	^ coll detect: [ :a | a name = aName ]
 ]
 
 { #category : #accessing }
@@ -34,14 +52,14 @@ PAModel >> groups [
 	^ groups
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #public }
 PAModel >> importFilename: filename [
 	| fr |
 	fr := filename asFileReference.
 	self importFromString: fr contents
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #public }
 PAModel >> importFromString: string [
 	| ss r |
 	string lines allButFirst do: [ :l |
@@ -65,7 +83,7 @@ PAModel >> initialize [
 	paths := OrderedCollection new
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #public }
 PAModel >> numberOfRules [
 	^ rules size
 ]
