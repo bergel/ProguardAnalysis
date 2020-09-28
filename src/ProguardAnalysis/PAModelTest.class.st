@@ -13,7 +13,7 @@ PAModelTest >> setUp [
 	m := PAModel new
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 PAModelTest >> smallDataSet [
 	^ 'app,path,group,option
 io.github.subhamtyagi.lastlauncher_4,io.github.subhamtyagi.lastlauncher_4_src.tar.gz/app/proguard-rules.pro,preverification,dontpreverify
