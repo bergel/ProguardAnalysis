@@ -53,6 +53,24 @@ PAModel >> groups [
 ]
 
 { #category : #visualization }
+PAModel >> gtInspectorOptionBlueprintIn: composite [
+	<gtInspectorPresentationOrder: -10>
+	composite roassal3
+		title: 'OptionBlueprint';
+		initializeCanvas: [ 
+			self visualizeOptionBlueprint ]
+]
+
+{ #category : #visualization }
+PAModel >> gtInspectorOptions2In: composite [
+	<gtInspectorPresentationOrder: -5>
+	composite roassal3
+		title: 'Option Cooccurence/App (1)';
+		initializeCanvas: [ 
+			self visualizeOptionCooccurenceAppWith1 ]
+]
+
+{ #category : #visualization }
 PAModel >> gtInspectorOptionsIn: composite [
 	<gtInspectorPresentationOrder: -10>
 	composite roassal3
@@ -114,6 +132,11 @@ PAModel >> options [
 ]
 
 { #category : #accessing }
+PAModel >> optionsSimplified [
+	^ self options reject: [ :o | #('keep' 'dontwarn' 'dontnote') anySatisfy: [ :kk | kk = o name  ] ]
+]
+
+{ #category : #accessing }
 PAModel >> paths [
 	^ paths
 ]
@@ -124,13 +147,53 @@ PAModel >> rules [
 ]
 
 { #category : #visualization }
+PAModel >> visualizeOptionBlueprint [
+
+	"a PAModel"
+
+	| n m |
+	n := NSScale ordinal range: { 
+			     Color red.
+			     Color blue.
+			     Color yellow }.
+	n := NSScale category20c.
+	m := RSMondrian new.
+	m nodes: self options forEach: [ :o | 
+		m shape box
+			size: 20;
+			color: [ :coop | n scale: coop ].
+		m nodes: (o coOptionsFromApp asSet asArray sortedAs: #name) ].
+
+	m layout grid.
+	m build.
+	^ m canvas
+]
+
+{ #category : #visualization }
 PAModel >> visualizeOptionCooccurenceApp [
 
 	| m |
 	m := RSMondrian new.
-	m nodes: self options.
-	m line connectToAll: [ :o | 
-		o coOptionsFromAppWithOccurencesHigherThan: 800 ].
+	m nodes: self optionsSimplified.
+	m line
+		color: Color blue translucent; 
+		connectToAll: [ :o | 
+			o coOptionsFromAppCountAs1WithOccurencesHigherThan: 50 ].
+	m layout force.
+	m build.
+	^ m canvas
+]
+
+{ #category : #visualization }
+PAModel >> visualizeOptionCooccurenceAppWith1 [
+
+	| m |
+	m := RSMondrian new.
+	m nodes: self optionsSimplified.
+	m line 
+		color: Color blue translucent; 
+		connectToAll: [ :o | 
+			o coOptionsFromAppCountAs1WithOccurencesHigherThan: 1 ].
 	m layout force.
 	m build.
 	^ m canvas
